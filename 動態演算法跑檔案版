@@ -1,7 +1,6 @@
 from math import sqrt
 from random import randint,shuffle
 import random
-import numpy as np
 import time
 
 # Defining infinity
@@ -159,10 +158,11 @@ if __name__=='__main__':
     smax = 200*0.000009
     smin = 20*0.000009
     user = 100
+    time_max = 0
     f= open("users.txt","r")
     while True:
         start = time.time()
-        print("Current users number = ",user)
+        #print("Current users number = ",user)
         for i in range(user):
             line = f.readline()
             lat[i] = float(line)
@@ -171,8 +171,8 @@ if __name__=='__main__':
         if user == 1:
             lat_position = lat[0]
             lon_position = lon[0]
-            print("lat = %5.6f" %lat[0])
-            print("lon = %5.6f" %lon[0])
+            #print("lat = %5.6f" %lat[0])
+            #print("lon = %5.6f" %lon[0])
             
         v1 = [Point(lon[0],lat[0])]
         for i in range(1, user):
@@ -180,21 +180,21 @@ if __name__=='__main__':
         mec = minimum_enclosing_circle(v1)
         
         if mec.R > TxR*0.000009:
-            print("Out of range")
+            #print("Out of range")
             for i in range(user-1 , -1, -1): # 99~0
                 v2 = [Point(lon[user-1],lat[user-1])]
                 for j in range(user-2 , i-1, -1): #user-i
                     v2.append(Point(lon[j],lat[j]))
                 mec2 = minimum_enclosing_circle(v2);
                 if mec2.R > TxR*0.000009:
-                    print("Kicked off user below ",i)
+                    #print("Kicked off user below ",i)
                     v3 = [Point(lon[user-1],lat[user-1])]
                     for j in range(user-2 , i ,-1):
                         v3.append(Point(lon[j],lat[j]))
                     mec3 = minimum_enclosing_circle(v3)
                     for m in range(i+1):
                         if sqrt(pow(lat[m] - mec3.C.Y, 2) + pow(lon[m] - mec3.C.X, 2)) > TxR * 0.000009:
-                            print("Kick off user ",m)
+                            #print("Kick off user ",m)
                             lat[m] = 0
                     cnt = 0
                     for k in range(user):
@@ -207,7 +207,9 @@ if __name__=='__main__':
                     lat_position = mec3.C.Y
                     lon_position = mec3.C.X
                     end = time.time()
-                    print("執行時間：%f 秒" % (end - start))
+                    if((end-start) > time_max):
+                        time_max = end-start
+                    print("最大執行時間：%f 秒" % (time_max))
                     break
             time.sleep(1)
         elif mec.R == 0:
@@ -217,9 +219,12 @@ if __name__=='__main__':
             lon_position = lon[0]
             print("finish")
             end = time.time()
-            print("執行時間：%f 秒" % (end - start))
+            if((end-start) > time_max):
+                time_max = end-start
+            print("最大執行時間：%f 秒" % (time_max))
             time.sleep(1)
         else:
+            '''
             print("lat = ",mec.C.Y)
             print("lon = ",mec.C.X)
             print("R = ",mec.R)
@@ -234,6 +239,9 @@ if __name__=='__main__':
             lat_position = mec.C.Y
             lon_position = mec.C.X
             print("finish")
+            '''
             end = time.time()
-            print("執行時間：%f 秒" % (end - start))
+            if((end-start) > time_max):
+                time_max = end-start
+            print("最大執行時間：%f 秒" % (time_max))
             time.sleep(1)
