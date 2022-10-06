@@ -1,0 +1,29 @@
+import random
+user = 100
+latmin = 24.7890
+latmax = 24.7895
+lonmin = 120.9975
+lonmax = 120.9980
+smax = 200
+smin = 20
+f= open("users.txt","w+")
+lat = [0]*101
+lon = [0]*101
+speed = [0]*101
+for i in range(user):   # 0~99
+    lat[i] = random.uniform(latmin, latmax)
+    lon[i] = random.uniform(lonmin, lonmax)
+    speed[i] = random.uniform(smin, smax)
+    f.write("%f\n" %(lat[i]))
+    f.write("%f\n" %(lon[i]))
+    f.write("%f\n" %(speed[i]))
+for j in range(15):
+    for i in range(user):
+        speed[i] = random.uniform(smin, smax)
+        lat[i] = lat[i] + speed[i]*0.000009
+        lon[i] = random.uniform(lonmin, lonmax)
+        f.write("%f\n" % lat[i])
+        f.write("%f\n" % lon[i])
+        f.write("%f\n" %(speed[i]))
+
+f.close()
