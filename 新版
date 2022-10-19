@@ -158,7 +158,7 @@ if __name__=='__main__':
     lonmax = 120.9980
     smax = 200*0.000009
     smin = 20*0.000009
-    user = 100
+    user = 15
     count_out = 0
     count_num = 0
     time_max = 0
@@ -184,10 +184,10 @@ if __name__=='__main__':
             v1.append(Point(lon[i],lat[i]))
         mec = minimum_enclosing_circle(v1)
         
-        if user >90:
-            for i in range(user-1,user-90,-1):
+        if user >10:
+            for i in range(user-1,user-11,-1):
                 speed_total += speed[i]; 
-            speed_uav = speed_total/90;
+            speed_uav = speed_total/10;
         else:
             speed_uav = speed[user-1];
         
@@ -277,4 +277,3 @@ if __name__=='__main__':
         #print("超過比率 = ",count_out/count_num)
         #print("總次數 = ",count_num)
         #print("最大執行值間 = ",time_max)
-            
