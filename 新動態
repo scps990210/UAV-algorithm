@@ -163,6 +163,7 @@ if __name__=='__main__':
     count_out = 0
     count_num = 0
     time_max = 0
+    diff_total = 0
     
     
     
@@ -262,7 +263,15 @@ if __name__=='__main__':
                 #print("左移",(mec.C.X - lon_position) / 0.000009,"公尺")
             #else:
                 #print("右移",(lon_position - mec.C.X) / 0.000009,"公尺")
-            print("speed = ",speed_uav/0.03);
+            print("predict speed = ",speed_uav/0.03,"m/s");
+            rspd = abs((lat_position - mec.C.Y/mult) / 0.000009/0.03)
+            pspd = abs(speed_uav/0.03)
+            diff = abs((rspd - pspd)/rspd)
+            
+            if count_num > 1:
+                diff_total = diff_total + diff
+                diff_mean = diff_total/(count_num-1)
+                print("誤差率 = ", diff_mean)
             lat_position = mec.C.Y/mult
             lon_position = mec.C.X/mult
             print("finish")
