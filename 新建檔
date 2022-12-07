@@ -1,0 +1,70 @@
+import random
+user = 100
+latmin = 24.7890
+latmax = 24.7900
+lonmin = 120.998000
+lonmax = 120.998108
+smax = 1.2 #1.2m/0.03s
+smin = 0.6 #0.6m/0.03s
+f= open("users.txt","w+")
+lat = [0]*101
+lon = [0]*101
+speed = [0]*101
+for i in range(25):   # 0~24
+    lat[i] = latmin
+    lon[i] = lonmin
+    speed[i] = random.uniform(smin, smax)
+    f.write("%f\n" %(lat[i]))
+    f.write("%f\n" %(lon[i]))
+    f.write("%f\n" %(speed[i]))
+for i in range(25,50):   # 25~49
+    lat[i] = latmin
+    lon[i] = lonmin+0.000009
+    speed[i] = random.uniform(smin, smax)
+    f.write("%f\n" %(lat[i]))
+    f.write("%f\n" %(lon[i]))
+    f.write("%f\n" %(speed[i]))
+for i in range(50,75):   # 50~74
+    lat[i] = latmin
+    lon[i] = lonmin+0.000009*2
+    speed[i] = random.uniform(smin, smax)
+    f.write("%f\n" %(lat[i]))
+    f.write("%f\n" %(lon[i]))
+    f.write("%f\n" %(speed[i]))
+for i in range(75,user):   # 75~99
+    lat[i] = latmin
+    lon[i] = lonmin+0.000009*3
+    speed[i] = random.uniform(smin, smax)
+    f.write("%f\n" %(lat[i]))
+    f.write("%f\n" %(lon[i]))
+    f.write("%f\n" %(speed[i]))
+for j in range(100):
+    for i in range(25):   # 0~24
+        speed[i] = random.uniform(smin, smax)
+        lat[i] = lat[i] + speed[i]*0.000009
+        lon[i] = lonmin
+        f.write("%f\n" %(lat[i]))
+        f.write("%f\n" %(lon[i]))
+        f.write("%f\n" %(speed[i]))
+    for i in range(25,50):   # 25~49
+        speed[i] = random.uniform(smin, smax)
+        lat[i] = lat[i] + speed[i]*0.000009
+        lon[i] = lonmin+0.000009
+        f.write("%f\n" %(lat[i]))
+        f.write("%f\n" %(lon[i]))
+        f.write("%f\n" %(speed[i]))
+    for i in range(50,75):   # 50~74
+        speed[i] = random.uniform(smin, smax)
+        lat[i] = lat[i] + speed[i]*0.000009
+        lon[i] = lonmin+0.000009*2
+        f.write("%f\n" %(lat[i]))
+        f.write("%f\n" %(lon[i]))
+        f.write("%f\n" %(speed[i]))
+    for i in range(75,user):   # 75~99
+        speed[i] = random.uniform(smin, smax)
+        lat[i] = lat[i] + speed[i]*0.000009
+        lon[i] = lonmin+0.000009*3
+        f.write("%f\n" %(lat[i]))
+        f.write("%f\n" %(lon[i]))
+        f.write("%f\n" %(speed[i]))
+f.close()
