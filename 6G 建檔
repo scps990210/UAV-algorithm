@@ -1,0 +1,24 @@
+import random
+user = 100
+latmin = 24.7890
+latmax = 24.7980
+lonmin = 120.9975
+lonmax = 121.0065
+smax = 4
+smin = 2
+f= open("users_6G.txt","w+")
+lat = [0]*101
+lon = [0]*101
+for i in range(user):   # 0~99
+    lat[i] = random.uniform(latmin, latmax)
+    lon[i] = random.uniform(lonmin, lonmax)
+    f.write("%f\n" %(lat[i]))
+    f.write("%f\n" %(lon[i]))
+for j in range(1000):
+    for i in range(user):
+        lat[i] = random.uniform(latmin, latmax)
+        lon[i] = random.uniform(lonmin, lonmax)
+        f.write("%f\n" %(lat[i]))
+        f.write("%f\n" %(lon[i]))
+
+f.close()
