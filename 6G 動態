@@ -152,7 +152,6 @@ if __name__=='__main__':
     TxR = 300
     lat = [0]*101
     lon = [0]*101
-    speed = [0]*101
     latmin = 24.7890
     latmax = 24.7895
     lonmin = 120.9975
@@ -169,7 +168,6 @@ if __name__=='__main__':
     
     f= open("users_6G.txt","r")
     while True:
-        speed_total = 0
         count_num += 1
         start = time.time()
         print("Current users number = ",user)
@@ -178,23 +176,11 @@ if __name__=='__main__':
             lat[i] = float(line)
             line = f.readline()
             lon[i] = float(line)
-            line = f.readline()
-            speed[i] = float(line)
             
         v1 = [Point(lon[0]*mult,lat[0]*mult)]
         for i in range(1, user):
             v1.append(Point(lon[i]*mult,lat[i]*mult))
         mec = minimum_enclosing_circle(v1)
-        
-        for i in range(user-1,0,-1):
-            speed_total += speed[i];
-        speed_uav = speed_total/user;
-        '''if user >10:
-            for i in range(user-1,user-11,-1):
-                speed_total += speed[i]; 
-            speed_uav = speed_total/10;
-        else:
-            speed_uav = speed[user-1];'''
         
         if mec.R/mult > TxR*0.000009:
             print("Out of range")
@@ -220,32 +206,28 @@ if __name__=='__main__':
                             lat[cnt] = lat[k]
                             cnt += 1
                     user = cnt
-                    if mec3.C.Y > lat_position:
+                    if mec3.C.Y/mult > lat_position:
                         print("前移",(mec3.C.Y/mult - lat_position) / 0.000009,"公尺")
                     else:
                         print("後移",(lat_position - mec3.C.Y/mult) / 0.000009,"公尺")
-                    if mec3.C.X > lon_position:
+                    if mec3.C.X/mult > lon_position:
                         print("左移",(mec3.C.X/mult - lon_position) / 0.000009,"公尺")
                     else:
                         print("右移",(lon_position - mec3.C.X/mult) / 0.000009,"公尺")
-                    print("speed = ",speed_uav/0.03);
                     lat_position = mec3.C.Y/mult
                     lon_position = mec3.C.X/mult
                     break
         elif mec.R/mult == 0:
             print("mec.Y = %5.6f" %mec.C.Y/mult)
             print("mec.X = %5.6f" %mec.C.X/mult)
-            if mec.C.Y > lat_position:
+            if mec.C.Y/mult > lat_position:
                 print("前移",(mec.C.Y/mult - lat_position) / 0.000009,"公尺")
-                print("real speed = ",(mec.C.Y/mult - lat_position) / 0.000009/0.03,"m/s")
             else:
                 print("後移",(lat_position - mec.C.Y/mult) / 0.000009,"公尺")
-                print("real speed = ",(lat_position - mec.C.Y) / 0.000009/0.03,"m/s")
-            if mec.C.X > lon_position:
+            if mec.C.X/mult > lon_position:
                 print("左移",(mec.C.X/mult - lon_position) / 0.000009,"公尺")
             else:
                 print("右移",(lon_position - mec.C.X/mult) / 0.000009,"公尺")
-            print("speed = ",speed_uav/0.03);
             
             
             lat_position = mec.C.Y/mult
@@ -257,33 +239,19 @@ if __name__=='__main__':
             print("lon = ",mec.C.X/mult)
             #print("R = ",mec.R/mult)
             if mec.C.Y > lat_position:
-                #print("前移",(mec.C.Y - lat_position) / 0.000009,"公尺")
-                print("real speed = ",(mec.C.Y/mult - lat_position) / 0.000009/0.03,"m/s")
+                print("前移",(mec.C.Y - lat_position) / 0.000009,"公尺")
             else:
-                #print("後移",(lat_position - mec.C.Y) / 0.000009,"公尺")
-                print("real speed = ",(lat_position - mec.C.Y/mult) / 0.000009/0.03,"m/s")
-            #if mec.C.X > lon_position:
-                #print("左移",(mec.C.X - lon_position) / 0.000009,"公尺")
-            #else:
-                #print("右移",(lon_position - mec.C.X) / 0.000009,"公尺")
-            print("predict speed = ",speed_uav/0.03,"m/s");
-            rspd = abs((lat_position - mec.C.Y/mult) / 0.000009/0.03)
-            pspd = abs(speed_uav/0.03)
-            diff = abs((rspd - pspd)/rspd)
+                print("後移",(lat_position - mec.C.Y) / 0.000009,"公尺")
+            if mec.C.X > lon_position:
+                print("左移",(mec.C.X - lon_position) / 0.000009,"公尺")
+            else:
+                print("右移",(lon_position - mec.C.X) / 0.000009,"公尺")
             
-            if count_num > 1:
-                diff_total = diff_total + diff
-                diff_mean = diff_total/(count_num-1)
-                print("誤差率 = ", diff_mean)
             lat_position = mec.C.Y/mult
             lon_position = mec.C.X/mult
             print("finish")
             
         end = time.time()
         t = end - start
-        if t > time_max:
-            time_max = t
-        if t < 0.1:
-            time.sleep(0.1-t)
-        else:
-            count_out += 1
+        if t < 0.03:
+            time.sleep(0.03-t)
