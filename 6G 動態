@@ -168,6 +168,8 @@ if __name__=='__main__':
     time_max = 0
     ladiff_total = 0
     lodiff_total = 0
+    count_lad = 0
+    count_lod = 0
     
     
     
@@ -257,14 +259,14 @@ if __name__=='__main__':
             print("lat = ",mec.C.Y/mult)
             print("lon = ",mec.C.X/mult)
             #print("R = ",mec.R/mult)
-            if mec.C.Y > lat_position:
-                print("前移",(mec.C.Y - lat_position) / 0.000009,"公尺")
+            if mec.C.Y/mult > lat_position:
+                print("前移",(mec.C.Y/mult - lat_position) / 0.000009,"公尺")
             else:
-                print("後移",(lat_position - mec.C.Y) / 0.000009,"公尺")
-            if mec.C.X > lon_position:
-                print("左移",(mec.C.X - lon_position) / 0.000009,"公尺")
+                print("後移",(lat_position - mec.C.Y/mult) / 0.000009,"公尺")
+            if mec.C.X/mult > lon_position:
+                print("左移",(mec.C.X/mult - lon_position) / 0.000009,"公尺")
             else:
-                print("右移",(lon_position - mec.C.X) / 0.000009,"公尺")
+                print("右移",(lon_position - mec.C.X/mult) / 0.000009,"公尺")
             print("real laspeed = ",abs(lat_position - mec.C.Y/mult) / 0.000009/0.03,"m/s")
             print("real lospeed = ",abs(lon_position - mec.C.X/mult) / 0.000009/0.03,"m/s")
             print("predict laspeed = ",laspeed_uav/0.03,"m/s")
@@ -273,14 +275,22 @@ if __name__=='__main__':
             lorspd = abs((lon_position - mec.C.X/mult) / 0.000009/0.03)
             lapspd = abs(laspeed_uav/0.03)
             lopspd = abs(lospeed_uav/0.03)
-            ladiff = abs((larspd - lapspd)/larspd)
-            lodiff = abs((lorspd - lopspd)/lorspd)
+            if larspd != 0:
+                ladiff = abs((larspd - lapspd)/larspd)
+            if lorspd != 0:
+                lodiff = abs((lorspd - lopspd)/lorspd)
             
             if count_num > 1:
                 ladiff_total = ladiff_total + ladiff
                 lodiff_total = lodiff_total + lodiff
                 ladiff_mean = ladiff_total/(count_num-1)
                 lodiff_mean = lodiff_total/(count_num-1)
+                if ladiff > 0.2:
+                    count_lad += 1
+                if lodiff > 0.2:
+                    count_lod += 1
+                print("la > 0.2機率 = ", count_lad/count_num)
+                print("lo > 0.2機率 = ", count_lod/count_num)
                 print("la誤差率 = ", ladiff_mean)
                 print("lo誤差率 = ", lodiff_mean)
             
