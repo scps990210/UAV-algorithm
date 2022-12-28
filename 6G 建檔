@@ -8,16 +8,17 @@ lonmin = 120.9975
 lonmax = 121.002
 smax = 1.2 #1.2m/0.03s
 smin = 0.6 #0.6m/0.03s
-lamax = 0.6
-lamin = -1.2
-lomax = 0.6
-lomin = -1.2
+lamax = 0.9
+lamin = 0.3
+lomax = 0.9
+lomin = 0.3
 f= open("users_6G.txt","w+")
 lat = [0]*101
 lon = [0]*101
+count_num = 0
 for i in range(user):   # 0~99
-    laspeed = random.uniform(0, lamax)
-    lospeed = random.uniform(0, lomax)
+    laspeed = random.uniform(lamin, lamax)
+    lospeed = random.uniform(lomin, lomax)
     #speed[i] = math.sqrt(pow(laspeed,2)+pow(lospeed,2))
     lat[i] = random.uniform(latmin, latmax)
     lon[i] = random.uniform(lonmin, lonmax)
@@ -27,11 +28,17 @@ for i in range(user):   # 0~99
     f.write("%f\n" %(lospeed))
 for j in range(1000):
     for i in range(user):
-        laspeed = random.uniform(0, lamax)
-        lospeed = random.uniform(0, lomax)
-        #speed[i] = math.sqrt(pow(laspeed,2)+pow(lospeed,2))
+        '''count_num += 1
+        if count_num < 100:
+            lat[i] = lat[i] + laspeed*0.000009
+            lon[i] = lon[i] + lospeed*0.000009
+        else:
+        count_num = 0'''
+        laspeed = random.uniform(lamin, lamax)
+        lospeed = random.uniform(lomin, lomax)
         lat[i] = lat[i] + laspeed*0.000009
         lon[i] = lon[i] + lospeed*0.000009
+        
         f.write("%f\n" %(lat[i]))
         f.write("%f\n" %(lon[i]))
         f.write("%f\n" %(laspeed))
