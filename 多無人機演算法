@@ -2,7 +2,7 @@ from math import sqrt
 from random import randint,shuffle
 import random
 import time
-
+import numpy as np
 # Defining infinity
 INF = 1e18
 mult = 1e6
@@ -154,17 +154,27 @@ if __name__=='__main__':
     diameter = 600
     density = [0]*10
     location = [[0]*901 for i in range(11)]
-    minimum_lat = 30
-    minimum_lon = 130
-    maximum_lat = 0
-    maximum_lon = 0
+    
+    minimum_lat = [0]*10
+    minimum_lon = [0]*10
+    maximum_lat = [0]*10
+    maximum_lon = [0]*10
     lat = [0]*1001
     lon = [0]*1001
     lat_uav = [0]*10
     lon_uav = [0]*10
     lat_divide = [[0]*1001 for i in range(11)]
     lon_divide = [[0]*1001 for i in range(11)]
-
+    
+    for i in range(10):
+        minimum_lat[i] = 30
+        minimum_lon[i] = 130
+        maximum_lat[i] = 0
+        maximum_lon[i] = 0
+    for i in range(3):
+        for j in range(3):
+            lat_uav[i*3+j+1] = latmin + 0.0054*j + 0.0027
+            lon_uav[i*3+j+1] = lonmin + 0.0054*i + 0.0027
     for i in range(900):
         lat[i] = random.uniform(latmin,latmax)
         lon[i] = random.uniform(lonmin,lonmax)
@@ -178,18 +188,32 @@ if __name__=='__main__':
             lon_divide[2][density[2]] = lon[i]
             density[2] += 1
         if lat[i] > (latmin + diameter*meter*2) and lat[i] < (latmin + diameter*meter*3) and lon[i] > (lonmin + diameter*meter*0) and lon[i] < (lonmin + diameter*meter*1):
+            lat_divide[3][density[3]] = lat[i]
+            lon_divide[3][density[3]] = lon[i]
             density[3] += 1
         if lat[i] > (latmin + diameter*meter*0) and lat[i] < (latmin + diameter*meter*1) and lon[i] > (lonmin + diameter*meter*1) and lon[i] < (lonmin + diameter*meter*2):
+            lat_divide[4][density[4]] = lat[i]
+            lon_divide[4][density[4]] = lon[i]
             density[4] += 1
         if lat[i] > (latmin + diameter*meter*1) and lat[i] < (latmin + diameter*meter*2) and lon[i] > (lonmin + diameter*meter*1) and lon[i] < (lonmin + diameter*meter*2):
+            lat_divide[5][density[5]] = lat[i]
+            lon_divide[5][density[5]] = lon[i]
             density[5] += 1
         if lat[i] > (latmin + diameter*meter*2) and lat[i] < (latmin + diameter*meter*3) and lon[i] > (lonmin + diameter*meter*1) and lon[i] < (lonmin + diameter*meter*2):
+            lat_divide[6][density[6]] = lat[i]
+            lon_divide[6][density[6]] = lon[i]
             density[6] += 1
         if lat[i] > (latmin + diameter*meter*0) and lat[i] < (latmin + diameter*meter*1) and lon[i] > (lonmin + diameter*meter*2) and lon[i] < (lonmin + diameter*meter*3):
+            lat_divide[7][density[7]] = lat[i]
+            lon_divide[7][density[7]] = lon[i]
             density[7] += 1
         if lat[i] > (latmin + diameter*meter*1) and lat[i] < (latmin + diameter*meter*2) and lon[i] > (lonmin + diameter*meter*2) and lon[i] < (lonmin + diameter*meter*3):
+            lat_divide[8][density[8]] = lat[i]
+            lon_divide[8][density[8]] = lon[i]
             density[8] += 1
         if lat[i] > (latmin + diameter*meter*2) and lat[i] < (latmin + diameter*meter*3) and lon[i] > (lonmin + diameter*meter*2) and lon[i] < (lonmin + diameter*meter*3):
+            lat_divide[9][density[9]] = lat[i]
+            lon_divide[9][density[9]] = lon[i]
             density[9] += 1
             
 
@@ -197,209 +221,175 @@ if __name__=='__main__':
         min1 = min(density[2],density[4],density[5])
         if min1 < 100 and min1 == density[2]:
             for i in range(density[2]):
-                if lat_divide[2][i] > maximum_lat:
-                    maximum_lat = lat_divide[2][i]
-            lat_uav[2] = maximum_lat - diameter/2
+                if lat_divide[2][i] > maximum_lat[1]:
+                    maximum_lat[1] = lat_divide[2][i]
+            lat_uav[2] = maximum_lat[1] - diameter/2*meter
         if min1 < 100 and min1 == density[4]:
             for i in range(density[4]):
-                if lon_divide[4][i] > maximum_lon:
-                    maximum_lon = lon_divide[4][i]
-            lon_uav[4] = maximum_lon - diameter/2
+                if lon_divide[4][i] > maximum_lon[1]:
+                    maximum_lon[1] = lon_divide[4][i]
+            lon_uav[4] = maximum_lon[1] - diameter/2*meter
         if min1 < 100 and min1 == density[5]:
             for i in range(density[5]):
-                if lat_divide[5][i] > maximum_lat:
-                    maximum_lat = lat_divide[5][i]
-                if lon_divide[5][i] > maximum_lon:
-                    maximum_lon = lon_divide[5][i]
-            lat_uav[5] = maximum_lat - diameter/2
-            lon_uav[5] = maximum_lon - diameter/2
+                if lat_divide[5][i] > maximum_lat[1]:
+                    maximum_lat[1] = lat_divide[5][i]
+                if lon_divide[5][i] > maximum_lon[1]:
+                    maximum_lon[1] = lon_divide[5][i]
+            lat_uav[5] = maximum_lat[1] - diameter/2*meter
+            lon_uav[5] = maximum_lon[1] - diameter/2*meter
     if density[2] > 100:
         min2 = min(density[1],density[3],density[5])
         if min2 < 100 and min2 == density[1]:
             for i in range(density[1]):
-                if lat_divide[1][i] < minimum_lat:
-                    minimum_lat = lat_divide[1][i]
-            lat_uav[1] = minimum_lat + diameter/2
+                if lat_divide[1][i] < minimum_lat[2]:
+                    minimum_lat[2] = lat_divide[1][i]
+            lat_uav[1] = minimum_lat[2] + diameter/2*meter
         if min2 < 100 and min2 == density[3]:
             for i in range(density[3]):
-                if lat_divide[3][i] > maximum_lat:
-                    maximum_lat = lat_divide[3][i]
-            lat_uav[3] = maximum_lat - diameter/2
+                if lat_divide[3][i] > maximum_lat[2]:
+                    maximum_lat[2] = lat_divide[3][i]
+            lat_uav[3] = maximum_lat[2] - diameter/2*meter
         if min2 < 100 and min2 == density[5]:
             for i in range(density[5]):
-                if lon_divide[5][i] > maximum_lon:
-                    maximum_lon = lon_divide[5][i]
-            lon_uav[5] = maximum_lon - diameter/2
+                if lon_divide[5][i] > maximum_lon[2]:
+                    maximum_lon[2] = lon_divide[5][i]
+            lon_uav[5] = maximum_lon[2] - diameter/2*meter
     if density[3] > 100:
         min3 = min(density[2],density[5],density[6])
         if min3 < 100 and min3 == density[2]:
             for i in range(density[2]):
-                if lat_divide[2][i] < minimum_lat:
-                    minimum_lat = lat_divide[2][i]
-            lat_uav[2] = minimum_lat + diameter/2
+                if lat_divide[2][i] < minimum_lat[3]:
+                    minimum_lat[3] = lat_divide[2][i]
+            lat_uav[2] = minimum_lat[3] + diameter/2*meter
         if min3 < 100 and min3 == density[5]:
             for i in range(density[5]):
-                if lat_divide[5][i] < minimum_lat:
-                    minimum_lat = lat_divide[5][i]
-                if lon_divide[5][i] > maximum_lon:
-                    maximum_lon = lon_divide[5][i]
-            lat_uav[5] = minimum_lat + diameter/2
-            lon_uav[5] = maximum_lon - diameter/2
+                if lat_divide[5][i] < minimum_lat[3]:
+                    minimum_lat[3] = lat_divide[5][i]
+                if lon_divide[5][i] > maximum_lon[3]:
+                    maximum_lon[3] = lon_divide[5][i]
+            lat_uav[5] = minimum_lat[3] + diameter/2*meter
+            lon_uav[5] = maximum_lon[3] - diameter/2*meter
         if min3 < 100 and min3 == density[6]:
             for i in range(density[6]):
-                if lon_divide[6][i] > maximum_lon:
-                    maximum_lon = lon_divide[6][i]
-            lon_uav[6] = maximum_lon - diameter/2
+                if lon_divide[6][i] > maximum_lon[3]:
+                    maximum_lon[3] = lon_divide[6][i]
+            lon_uav[6] = maximum_lon[3] - diameter/2*meter
     if density[4] > 100:
         min4 = min(density[1],density[5],density[7])
         if min4 < 100 and min4 == density[1]:
             for i in range(density[1]):
-                if lon_divide[1][i] < minimum_lon:
-                    minimum_lon = lon_divide[1][i]
-            lon_uav[1] = minimum_lon + diameter/2
+                if lon_divide[1][i] < minimum_lon[4]:
+                    minimum_lon[4] = lon_divide[1][i]
+            lon_uav[1] = minimum_lon[4] + diameter/2*meter
         if min4 < 100 and min4 == density[5]:
             for i in range(density[5]):
-                if lat_divide[5][i] > maximum_lat:
-                    maximum_lat = lat_divide[5][i]
-            lat_uav[5] = maximum_lat - diameter/2
+                if lat_divide[5][i] > maximum_lat[4]:
+                    maximum_lat[4] = lat_divide[5][i]
+            lat_uav[5] = maximum_lat[4] - diameter/2*meter
         if min4 < 100 and min4 == density[7]:
             for i in range(density[7]):
-                if lon_divide[7][i] > maximum_lon:
-                    maximum_lon = lon_divide[7][i]
-            lon_uav[7] = maximum_lon - diameter/2
+                if lon_divide[7][i] > maximum_lon[4]:
+                    maximum_lon[4] = lon_divide[7][i]
+            lon_uav[7] = maximum_lon[4] - diameter/2*meter
     if density[5] > 100:
         min5 = min(density[2],density[4],density[6],density[8])
         if min5 < 100 and min5 == density[2]:
             for i in range(density[2]):
-                if lon_divide[2][i] < minimum_lon:
-                    minimum_lon = lon_divide[2][i]
-            lon_uav[2] = minimum_lon + diameter/2
+                if lon_divide[2][i] < minimum_lon[5]:
+                    minimum_lon[5] = lon_divide[2][i]
+            lon_uav[2] = minimum_lon[5] + diameter/2*meter
         if min5 < 100 and min5 == density[4]:
             for i in range(density[4]):
-                if lat_divide[4][i] < minimum_lat:
-                    minimum_lat = lat_divide[4][i]
-            lat_uav[4] = minimum_lat + diameter/2
+                if lat_divide[4][i] < minimum_lat[5]:
+                    minimum_lat[5] = lat_divide[4][i]
+            lat_uav[4] = minimum_lat[5] + diameter/2*meter
         if min5 < 100 and min5 == density[6]:
             for i in range(density[6]):
-                if lat_divide[6][i] > maximum_lat:
-                    maximum_lat = lat_divide[6][i]
-            lat_uav[6] = maximum_lat - diameter/2
+                if lat_divide[6][i] > maximum_lat[5]:
+                    maximum_lat[5] = lat_divide[6][i]
+            lat_uav[6] = maximum_lat[5] - diameter/2*meter
         if min5 < 100 and min5 == density[8]:
             for i in range(density[8]):
-                if lon_divide[8][i] > maximum_lon:
-                    maximum_lon = lon_divide[8][i]
-            lon_uav[8] = maximum_lon - diameter/2
+                if lon_divide[8][i] > maximum_lon[5]:
+                    maximum_lon[5] = lon_divide[8][i]
+            lon_uav[8] = maximum_lon[5] - diameter/2*meter
     if density[6] > 100:
         min6 = min(density[3],density[5],density[9])
         if min6 < 100 and min6 == density[3]:
             for i in range(density[3]):
-                if lon_divide[3][i] < minimum_lon:
-                    minimum_lon = lon_divide[3][i]
-            lon_uav[3] = minimum_lon + diameter/2
+                if lon_divide[3][i] < minimum_lon[6]:
+                    minimum_lon[6] = lon_divide[3][i]
+            lon_uav[3] = minimum_lon[6] + diameter/2*meter
         if min6 < 100 and min6 == density[5]:
             for i in range(density[5]):
-                if lat_divide[5][i] < minimum_lat:
-                    minimum_lat = lat_divide[5][i]
-            lat_uav[5] = minimum_lat + diameter/2
+                if lat_divide[5][i] < minimum_lat[6]:
+                    minimum_lat[6] = lat_divide[5][i]
+            lat_uav[5] = minimum_lat[6] + diameter/2*meter
         if min6 < 100 and min6 == density[9]:
             for i in range(density[9]):
-                if lon_divide[9][i] > maximum_lon:
-                    maximum_lon = lon_divide[9][i]
-            lon_uav[9] = maximum_lon - diameter/2
+                if lon_divide[9][i] > maximum_lon[6]:
+                    maximum_lon[6] = lon_divide[9][i]
+            lon_uav[9] = maximum_lon[6] - diameter/2*meter
     if density[7] > 100:
         min7 = min(density[4],density[5],density[8])
         if min7 < 100 and min7 == density[4]:
             for i in range(density[4]):
-                if lat_divide[4][i] < minimum_lat:
-                    minimum_lat = lat_divide[4][i]
-            lat_uav[4] = minimum_lat + diameter/2
+                if lat_divide[4][i] < minimum_lat[7]:
+                    minimum_lat[7] = lat_divide[4][i]
+            lat_uav[4] = minimum_lat[7] + diameter/2*meter
         if min7 < 100 and min7 == density[5]:
             for i in range(density[5]):
-                if lat_divide[5][i] > maximum_lat:
-                    maximum_lat = lat_divide[5][i]
-                if lon_divide[5][i] < minimum_lon:
-                    minimum_lon = lon_divide[5][i]
-            lat_uav[5] = maximum_lat - diameter/2
-            lon_uav[5] = minimum_lon + diameter/2
+                if lat_divide[5][i] > maximum_lat[7]:
+                    maximum_lat[7] = lat_divide[5][i]
+                if lon_divide[5][i] < minimum_lon[7]:
+                    minimum_lon[7] = lon_divide[5][i]
+            lat_uav[5] = maximum_lat[7] - diameter/2*meter
+            lon_uav[5] = minimum_lon[7] + diameter/2*meter
         if min7 < 100 and min7 == density[8]:
             for i in range(density[8]):
-                if lat_divide[8][i] > maximum_lat:
-                    maximum_lat = lat_divide[8][i]
-            lat_uav[8] = maximum_lat - diameter/2
+                if lat_divide[8][i] > maximum_lat[7]:
+                    maximum_lat[7] = lat_divide[8][i]
+            lat_uav[8] = maximum_lat[7] - diameter/2*meter
     if density[8] > 100:
         min8 = min(density[5],density[7],density[9])
         if min8 < 100 and min8 == density[5]:
             for i in range(density[5]):
-                if lon_divide[5][i] < minimum_lon:
-                    minimum_lon = lon_divide[5][i]
-            lon_uav[5] = minimum_lon + diameter/2
+                if lon_divide[5][i] < minimum_lon[8]:
+                    minimum_lon[8] = lon_divide[5][i]
+            lon_uav[5] = minimum_lon[8] + diameter/2*meter
         if min8 < 100 and min8 == density[7]:
             for i in range(density[7]):
-                if lat_divide[7][i] > minimum_lat:
-                    minimum_lat = lat_divide[7][i]
-            lat_uav[7] = minimum_lat + diameter/2
+                if lat_divide[7][i] > minimum_lat[8]:
+                    minimum_lat[8] = lat_divide[7][i]
+            lat_uav[7] = minimum_lat[8] + diameter/2*meter
         if min8 < 100 and min8 == density[9]:
             for i in range(density[9]):
-                if lat_divide[9][i] > maximum_lat:
-                    maximum_lat = lat_divide[9][i]
-            lat_uav[9] = maximum_lat - diameter/2
+                if lat_divide[9][i] > maximum_lat[8]:
+                    maximum_lat[8] = lat_divide[9][i]
+            lat_uav[9] = maximum_lat[8] - diameter/2*meter
     if density[9] > 100:
         min9 = min(density[5],density[6],density[8])
         if min9 < 100 and min9 == density[5]:
             for i in range(density[5]):
-                if lat_divide[5][i] < minimum_lat:
-                    minimum_lat = lat_divide[5][i]
+                if lat_divide[5][i] < minimum_lat[9]:
+                    minimum_lat[9] = lat_divide[5][i]
                 if lon_divide[5][i] < minimum_lon:
-                    minimum_lon = lon_divide[5][i]
-            lat_uav[5] = minimum_lat + diameter/2
-            lon_uav[5] = minimum_lon + diameter/2
+                    minimum_lon[9] = lon_divide[5][i]
+            lat_uav[5] = minimum_lat[9] + diameter/2*meter
+            lon_uav[5] = minimum_lon[9] + diameter/2*meter
         if min9 < 100 and min9 == density[6]:
             for i in range(density[6]):
-                if lon_divide[6][i] < minimum_lon:
-                    minimum_lon = lon_divide[6][i]
-            lon_uav[5] = minimum_lon + diameter/2
+                if lon_divide[6][i] < minimum_lon[9]:
+                    minimum_lon[9] = lon_divide[6][i]
+            lon_uav[5] = minimum_lon[9] + diameter/2*meter
         if min9 < 100 and min9 == density[8]:
             for i in range(density[8]):
-                if lon_divide[8][i] < minimum_lon:
-                    minimum_lon = lon_divide[8][i]
-            lon_uav[8] = minimum_lon + diameter/2
-                
-    '''Area1'''
-    for i in range(density[1]):
-        print("lat_divide[1][",i,"] = ",lat_divide[1][i])
-    #v1 = []
-    for i in range(density[1]):
-        if lat_divide[1][i] < minimum_lat:
-            minimum_lat = lat_divide[1][i]
-        if lon_divide[1][i] < minimum_lon:
-            minimum_lon = lon_divide[1][i]
-        #v1.append(Point(lon1[i],lat1[i]))
-    #mec = minimum_enclosing_circle(v1)
-    lat_uav[1] = diameter/2 + minimum_lat
-    lon_uav[1] = diameter/2 + minimum_lon
-    
-    print("minimum_lat = ",minimum_lat)
-    print("minimum_lon = ",minimum_lon)
-    #print("mec = ",mec.R/meter,"公尺")
-    '''Area2'''
-    for i in range(density[2]):
-        print("lat_divide[2][",i,"] = ",lat_divide[2][i])
-    #v1 = []
-    for i in range(density[2]):
-        if lat_divide[2][i] < minimum_lat:
-            minimum_lat = lat_divide[2][i]
-        if lon_divide[2][i] < minimum_lon:
-            minimum_lon = lon_divide[2][i]
-        #v1.append(Point(lon1[i],lat1[i]))
-    #mec = minimum_enclosing_circle(v1)
-    lat_uav[2] = diameter/2 + minimum_lat
-    lon_uav[2] = diameter/2 + minimum_lon
-    
-    print("minimum_lat = ",minimum_lat)
-    print("minimum_lon = ",minimum_lon)
-    #print("mec = ",mec.R/meter,"公尺")
-
-
+                if lon_divide[8][i] < minimum_lon[9]:
+                    minimum_lon[9] = lon_divide[8][i]
+            lon_uav[8] = minimum_lon[9] + diameter/2*meter
+    for i in range(1,10):
+        print("Uav",i," lon = ",lon_uav[i])
+        print("Uav",i," lat = ",lat_uav[i])
 
 
     
